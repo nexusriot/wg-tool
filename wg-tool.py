@@ -61,6 +61,8 @@ def init_server_config(addr=None, do_forward=True):
         fh.write("SaveConfig = true\n")
         if do_forward:
             fh.write(forward_rules(ENA_DEV, WG_DEV))
+    subprocess.check_call(["systemctl", "enable", "wg-quick@wg0.service"])
+    subprocess.check_call(["systemctl", "start", "wg-quick@wg0.service"])
 
 
 def init_client_config():
