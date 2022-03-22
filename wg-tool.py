@@ -83,7 +83,7 @@ def init_client_config(name, client_addr):
     client_public_key = subprocess.check_output(("wg", "pubkey"), stdin=ps.stdout).decode().strip()
     ps.wait()
     config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), name + ".conf")
-    address = "%s/24"
+    address = "%s/24" % client_addr
     with open(config_file, "w") as fh:
         fh.write("[Interface]\n")
         fh.write("PrivateKey = {private_key}\n".format(private_key=client_private_key))
