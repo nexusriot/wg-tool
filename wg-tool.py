@@ -35,7 +35,7 @@ def get_private_key():
 def create_public_key():
     private_key = get_private_key()
     ps = subprocess.Popen(('echo', private_key), stdout=subprocess.PIPE)
-    output = subprocess.check_output(("wg", "pubkey"), stdin=ps.stdout)
+    output = subprocess.check_output(("wg", "pubkey"), stdin=ps.stdout).decode().strip()
     ps.wait()
     with open(PUBLIC_KEY, "w") as fh:
         fh.write(output)
