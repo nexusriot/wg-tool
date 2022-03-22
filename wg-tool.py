@@ -69,7 +69,7 @@ def init_client_config():
 
 def main():
     parser = argparse.ArgumentParser()
-    subparser = parser.add_subparsers(dest='commanget_private_keyd')
+    subparser = parser.add_subparsers(dest='command')
     config_server = subparser.add_parser('server')
     config_client = subparser.add_parser('client')
     config_server.add_argument('--addr', type=str, required=False, default=None)
