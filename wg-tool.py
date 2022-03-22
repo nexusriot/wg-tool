@@ -1,3 +1,5 @@
+#!/usr/bin/env  python3
+
 import argparse
 import os
 import subprocess
@@ -42,6 +44,8 @@ def create_public_key():
 def init_server_config(addr=None, do_forward=True):
     if not ENDPOINT:
         raise ServerConfigException("Empty endpoint ip")
+    create_private_key()
+    create_public_key()
     config_file = os.path.join(SERVER_CONFIG_BASE_PATH, WG_DEV) + ".conf"
     private_key = get_private_key()
     pref_len = 24  # by default 24
@@ -65,7 +69,7 @@ def init_client_config():
 
 def main():
     parser = argparse.ArgumentParser()
-    subparser = parser.add_subparsers(dest='command')
+    subparser = parser.add_subparsers(dest='commanget_private_keyd')
     config_server = subparser.add_parser('server')
     config_client = subparser.add_parser('client')
     config_server.add_argument('--addr', type=str, required=False, default=None)
