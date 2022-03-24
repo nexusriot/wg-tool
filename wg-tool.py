@@ -4,6 +4,7 @@ import argparse
 import os
 import subprocess
 import ipaddress
+import shutil
 from config import *
 
 
@@ -70,6 +71,18 @@ def init_server_config(addr=None, do_forward=True):
     subprocess.check_call(["systemctl", "start", "wg-quick@wg0.service"])
 
 
+def cleanup():
+    try:
+        subprocess.check_call(["ip", "link", "delete", "dev", WG_DEV])
+    except:
+        pass
+    subprocess.check_call(["systemctl", "restart", "systemd-networkd"])
+    try:
+        shutil.rmtree(SERVER_CONFIG_BASE_PATH)
+    except OSError:
+        pass
+
+
 def add_peer(client_public_key, client_addr):
     subprocess.check_output(["wg", "set",  WG_DEV, "peer", client_public_key, "allowed-ips", client_addr])
 
@@ -100,8 +113,9 @@ def main():
     subparser = parser.add_subparsers(dest='command')
     config_server = subparser.add_parser('server')
     config_client = subparser.add_parser('client')
+    subparser.add_parser('cleanup')
     config_server.add_argument('--addr', type=str, required=False, default=None)  # if not set will take first net addr
-    config_client.add_argument('--client_addr', type=str, required=True)
+    config_client.add_argument('--client-addr', type=str, required=True)
     config_client.add_argument('--name', type=str, required=True)
 
     args = parser.parse_args()
@@ -109,6 +123,8 @@ def main():
         init_server_config(args.addr)
     elif args.command == 'client':
         init_client_config(args.name, args.client_addr)
+    elif args.command == 'cleanup':
+        cleanup()
     else:
         parser.print_help()
 
